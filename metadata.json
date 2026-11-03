@@ -1,0 +1,6 @@
+{
+  "name": "Zavi Chats - සිංහල Messaging App",
+  "description": "නවීන, ලස්සන සහ පූර්ණ පහසුකම් සහිත සිංහල Realtime WhatsApp Chat, Status, Calls සහ Media හුවමාරු App එක.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
