@@ -11,11 +11,11 @@ contents: read
 
 jobs:
 build:
-name: Build Zavi Chats APK
+name: Build Android APK
 runs-on: ubuntu-latest
 
 steps:
-  - name: Checkout Repository
+  - name: Checkout
     uses: actions/checkout@v4
 
   - name: Setup Node.js
@@ -33,10 +33,9 @@ steps:
     run: npm install --legacy-peer-deps
 
   - name: Install Capacitor
-    run: |
-      npm install @capacitor/core @capacitor/android @capacitor/cli --legacy-peer-deps
+    run: npm install @capacitor/core @capacitor/android @capacitor/cli --legacy-peer-deps
 
-  - name: Configure Zavi Chats
+  - name: Configure App
     run: |
       cat > capacitor.config.json << 'EOF'
       {
@@ -46,10 +45,10 @@ steps:
       }
       EOF
 
-  - name: Build Web App
+  - name: Build React App
     run: npm run build
 
-  - name: Add Android Platform
+  - name: Add Android
     run: |
       if [ ! -d android ]; then
         npx cap add android
