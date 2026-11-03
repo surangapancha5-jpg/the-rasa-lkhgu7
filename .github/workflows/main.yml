@@ -1,59 +1,73 @@
-name: Build Android APK
+name: Zavi Chats
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+workflow_dispatch:
+push:
+branches:
+- main
+
+permissions:
+contents: read
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+name: Build Zavi Chats APK
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: 22
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
+  - name: Setup Java
+    uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: 21
 
-      - name: Install Dependencies
-        run: npm install
+  - name: Install Dependencies
+    run: npm install --legacy-peer-deps
 
-      - name: Install Capacitor
-        run: |
-          npm install @capacitor/core @capacitor/android
-          npm install -D @capacitor/cli
+  - name: Install Capacitor
+    run: |
+      npm install @capacitor/core@latest @capacitor/android@latest @capacitor/cli@latest --legacy-peer-deps
 
-      - name: Build Web App
-        run: npm run build
+  - name: Configure Zavi Chats
+    run: |
+      cat > capacitor.config.json << 'EOF'
+      {
+        "appId": "com.zavi.chats",
+        "appName": "Zavi Chats",
+        "webDir": "dist"
+      }
+      EOF
 
-      - name: Add Android Platform
-        run: |
-          if [ ! -d android ]; then
-            npx cap add android
-          fi
+  - name: Build Web App
+    run: npm run build
 
-      - name: Sync Android
-        run: npx cap sync android
+  - name: Add Android Platform
+    run: |
+      if [ ! -d android ]; then
+        npx cap add android
+      fi
 
-      - name: Build APK
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
+  - name: Sync Android
+    run: npx cap sync android
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: The-Rasa-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+  - name: Build APK
+    run: |
+      cd android
+      chmod +x gradlew
+      ./gradlew assembleDebug
+
+  - name: Upload APK
+    uses: actions/upload-artifact@v4
+    with:
+      name: Zavi-Chats-APK
+      path: android/app/build/outputs/apk/debug/app-debug.apk
+      if-no-files-found: error
+      retention-days: 7
